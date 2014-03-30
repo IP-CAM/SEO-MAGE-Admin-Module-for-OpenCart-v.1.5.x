@@ -1,8 +1,9 @@
 <?php echo $header; ?>
-<!-- [Seomi Nipro] -->
+<!-- SEO Mage -->
 <style type="text/css">
   .status-on { width:56px;height:24px;background:url(view/image/seomage_on.png) top left no-repeat;cursor:pointer;margin-top:5px; }
   .status-off { width:56px;height:24px;background:url(view/image/seomage_off.png) top left no-repeat;cursor:pointer;margin-top:5px; }
+  .sm_code { background-color:#eee; }
 </style>
 
 <div id="content">
@@ -39,10 +40,14 @@
             <td><?php if($seomage_debug == 1) { echo '<div class="status status-on" title="1" rel="seomage_debug"></div>'; } else { echo '<div class="status status-off" title="0" rel="seomage_debug"></div>'; } ?><input name="seomage_debug" value="<?php echo $seomage_debug; ?>" id="seomage_debug" type="hidden" />
             </td>
           </tr>
+          <tr>
+            <td colspan="2"><?php echo $text_version; ?></span><br><?php echo $text_version_hint; ?></td></tr>
+          <tr>
+            <td><?php echo $entry_checkupdate; ?></td>
+            <td><?php if($seomage_checkupdate == 1) { echo '<div class="status status-on" title="1" rel="seomage_checkupdate"></div>'; } else { echo '<div class="status status-off" title="0" rel="seomage_checkupdate"></div>'; } ?><input name="seomage_checkupdate" value="<?php echo $seomage_checkupdate; ?>" id="seomage_checkupdate" type="hidden" />
+            </td>
+          </tr>
         </table>
-
-        <p><span class="customhelp"><?php echo $seomage_version; ?></span><br><?php echo $text_version_hint; ?></p>
-
         <div id="seomage_tabs" class="htabs clearfix">
           <a href="#tab_edit"><?php echo $tab_edit; ?></a>
           <a href="#tab_generation"><?php echo $tab_generation; ?></a>
@@ -85,170 +90,170 @@
         </div>
 
         <div id="tab_generation" class="divtab">
-          <p>Автоматическая генерация ссылок на основе заданного шаблона</p>
+          <p><?php echo $tab_generation_hint; ?></p>
           
 
           <div class="vtabs">
-            <a href="#gen_category">Категории</a>
-            <a href="#gen_product">Товары</a>
-            <a href="#gen_manufacturer">Производители</a>
-            <a href="#gen_page">Статьи</a>
+            <a href="#gen_category"><?php echo $text_categories; ?></a>
+            <a href="#gen_product"><?php echo $text_products; ?></a>
+            <a href="#gen_manufacturer"><?php echo $text_manufacturers; ?></a>
+            <a href="#gen_information"><?php echo $text_informations; ?></a>
           </div>
 
           <div class="vtabs-content">
 
             <div id="gen_category">
               <div class="message"></div>
-              <h3>Генерация ссылок для категорий товаров</h3>
+              <h3><?php echo $text_gen_categories; ?></h3>
               <table class="form">
                 <tbody>
                   <tr>
-                    <td>Язык наименования</td>
+                    <td><?php echo $text_language; ?></td>
                     <td>
                       <select class="gen_language">
                         <?
                         foreach ($languages as $key => $value) {
-                          print '<option value="'.$value['language_id'].'">'.$value['name'].'</option>';
+                          echo '<option value="'.$value['language_id'].'">'.$value['name'].'</option>';
                         }
                         ?>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>Шаблон</td>
+                    <td><?php echo $text_template; ?></td>
                     <td>
                       <select class="gen_method">
-                        <option value="{name}">{наименование}</option>
-                        <option value="manual">Свой шаблон</option>
+                        <option value="{name}">{name}</option>
+                        <option value="manual"><?php echo $text_custom_template; ?></option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>Свой шаблон:</td>
+                    <td><?php echo $text_custom_template; ?>:</td>
                     <td>
                       <input type="text" class="gen_template" size="100" />
                       <br>
-                      <p>Доступные варианты: наименование категории - <b>{name}</b>, id категории - <b>{id}</b></p>
+                      <p><?php echo $text_available_masks; ?>: <?php echo $text_mask_id; ?>, <?php echo $text_mask_name; ?></p>
                     </td>
                   </tr>
                   <tr>
-                    <td>Переводить в нижний регистр</td>
+                    <td><?php echo $text_lowercase; ?></td>
                     <td>
                       <input class="gen_register_to_low" type="checkbox" checked="checked" />
-                      <p>При включенном параметре ссылки будут полностью переведены в нижний регистр</p>
+                      <p><?php echo $text_lowercase_hint; ?></p>
                     </td>
                   </tr>
                   <tr>
-                    <td>Отчет</td>
+                    <td><?php echo $text_report; ?></td>
                     <td>
                       <select class="gen_report">
-                        <option value="full">Полный</option>
-                        <option value="error">Только ошибки</option>
+                        <option value="full"><?php echo $text_report_full; ?></option>
+                        <option value="error"><?php echo $text_report_error; ?></option>
                       </select>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <a onclick="generateLinks('gen_category');" class="button">Генерировать ссылки для категорий товаров</a> <span class="gen_loading"></span>
+              <a onclick="generateLinks('gen_category');" class="button"><?php echo $button_generate; ?></a> <span class="gen_loading"></span>
               <br>
               <div class="outreport"></div>
             </div>
 
             <div id="gen_product">
               <div class="message"></div>
-              <h3>Генерация ссылок для товаров</h3>
+              <h3><?php echo $text_gen_products; ?></h3>
               <table class="form">
                 <tbody>
                   <tr>
-                    <td>Язык наименования</td>
+                    <td><?php echo $text_language; ?></td>
                     <td>
                       <select class="gen_language">
                         <?
                         foreach ($languages as $key => $value) {
-                          print '<option value="'.$value['language_id'].'">'.$value['name'].'</option>';
+                          echo '<option value="'.$value['language_id'].'">'.$value['name'].'</option>';
                         }
                         ?>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>Шаблон</td>
+                    <td><?php echo $text_template; ?></td>
                     <td>
                       <select class="gen_method">
-                        <option value="{name}">{наименование}</option>
-                        <option value="{name}_{model}">{наименование}_{модель}</option>
-                        <option value="{manufacturer}_{name}">{производитель}_{наименование}</option>
-                        <option value="{manufacturer}_{name}_{model}">{производитель}_{наименование}_{модель}</option>
-                        <option value="manual">Свой шаблон</option>
+                        <option value="{name}">{name}</option>
+                        <option value="{name}_{model}">{name}_{model}</option>
+                        <option value="{manufacturer}_{name}">{manufacturer}_{name}</option>
+                        <option value="{manufacturer}_{name}_{model}">{manufacturer}_{name}_{model}</option>
+                        <option value="manual"><?php echo $text_custom_template; ?></option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>Свой шаблон:</td>
+                    <td><?php echo $text_custom_template; ?>:</td>
                     <td>
                       <input type="text" class="gen_template" size="100" />
                       <br>
-                      <p>Доступные варианты: наименование товара - <b>{name}</b>, id товара - <b>{id}</b>, наименование категории (если категорий несколько, берется случайная) - <b>{category}</b>, модель товара - <b>{model}</b>, артикул товара - <b>{sku}</b>, производитель - <b>{manufacturer}</b></p>
+                      <p><?php echo $text_available_masks; ?>: <?php echo $text_mask_id; ?>, <?php echo $text_mask_name; ?>, <?php echo $text_mask_category; ?>, <?php echo $text_mask_model; ?>, <?php echo $text_mask_sku; ?>, <?php echo $text_mask_manufacturer; ?>, </p>
                     </td>
                   </tr>
                   <tr>
-                    <td>Переводить в нижний регистр</td>
+                    <td><?php echo $text_lowercase; ?></td>
                     <td>
                       <input class="gen_register_to_low" type="checkbox" checked="checked" />
-                      <p>При включенном параметре ссылки будут полностью переведены в нижний регистр</p>
+                      <p><?php echo $text_lowercase_hint; ?></p>
                     </td>
                   </tr>
                   <tr>
-                    <td>Отчет</td>
+                    <td><?php echo $text_report; ?></td>
                     <td>
                       <select class="gen_report">
-                        <option value="full">Полный</option>
-                        <option value="error">Только ошибки</option>
+                        <option value="full"><?php echo $text_report_full; ?></option>
+                        <option value="error"><?php echo $text_report_error; ?></option>
                       </select>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <a onclick="generateLinks('gen_product');" class="button">Генерировать ссылки для товаров</a> <span class="gen_loading"></span>
+              <a onclick="generateLinks('gen_product');" class="button"><?php echo $button_generate; ?></a> <span class="gen_loading"></span>
               <br>
               <div class="outreport"></div>
             </div>
 
             <div id="gen_manufacturer">
               <div class="message"></div>
-              <h3>Генерация ссылок для производителей</h3>
+              <h3><?php echo $text_gen_manufacturers; ?></h3>
               <table class="form">
                 <tbody>
                   <tr>
-                    <td>Шаблон</td>
+                    <td><?php echo $text_template; ?></td>
                     <td>
                       <select class="gen_method">
-                        <option value="{name}">{наименование}</option>
-                        <option value="manual">Свой шаблон</option>
+                        <option value="{name}">{name}</option>
+                        <option value="manual"><?php echo $text_custom_template; ?></option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>Свой шаблон:</td>
+                    <td><?php echo $text_custom_template; ?>:</td>
                     <td>
                       <input type="text" class="gen_template" size="100" />
                       <br>
-                      <p>Доступные варианты: наименование производителя - <b>{name}</b>, id производителя - <b>{id}</b></p>
+                      <p><?php echo $text_available_masks; ?>: <?php echo $text_mask_id; ?>, <?php echo $text_mask_name; ?></p>
                     </td>
                   </tr>
                   <tr>
-                    <td>Переводить в нижний регистр</td>
+                    <td><?php echo $text_lowercase; ?></td>
                     <td>
                       <input class="gen_register_to_low" type="checkbox" checked="checked" />
-                      <p>При включенном параметре ссылки будут полностью переведены в нижний регистр</p>
+                      <p><?php echo $text_lowercase_hint; ?></p>
                     </td>
                   </tr>
                   <tr>
-                    <td>Отчет</td>
+                    <td><?php echo $text_report; ?></td>
                     <td>
                       <select class="gen_report">
-                        <option value="full">Полный</option>
-                        <option value="error">Только ошибки</option>
+                        <option value="full"><?php echo $text_report_full; ?></option>
+                        <option value="error"><?php echo $text_report_error; ?></option>
                       </select>
                     </td>
                   </tr>
@@ -257,64 +262,64 @@
 
               <input type="hidden" class="gen_language" value="none" />
 
-              <a onclick="generateLinks('gen_manufacturer');" class="button">Генерировать ссылки для производителей</a> <span class="gen_loading"></span>
+              <a onclick="generateLinks('gen_manufacturer');" class="button"><?php echo $button_generate; ?></a> <span class="gen_loading"></span>
               <br>
               <div class="outreport"></div>
             </div>
 
-            <div id="gen_page">
+            <div id="gen_information">
               <div class="message"></div>
-              <h3>Генерация ссылок для статей</h3>
+              <h3><?php echo $text_gen_informations; ?></h3>
               <table class="form">
                 <tbody>
                   <tr>
-                    <td>Язык наименования</td>
+                    <td><?php echo $text_language; ?></td>
                     <td>
                       <select class="gen_language">
                         <?
                         foreach ($languages as $key => $value) {
-                          print '<option value="'.$value['language_id'].'">'.$value['name'].'</option>';
+                          echo '<option value="'.$value['language_id'].'">'.$value['name'].'</option>';
                         }
                         ?>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>Шаблон</td>
+                    <td><?php echo $text_template; ?></td>
                     <td>
                       <select class="gen_method">
-                        <option value="{name}">{наименование}</option>
-                        <option value="manual">Свой шаблон</option>
+                        <option value="{name}">{name}</option>
+                        <option value="manual"><?php echo $text_custom_template; ?></option>
                       </select>
                     </td>
                   </tr>
                   <tr>
-                    <td>Свой шаблон:</td>
+                    <td><?php echo $text_custom_template; ?>:</td>
                     <td>
                       <input type="text" class="gen_template" size="100" />
                       <br>
-                      <p>Доступные варианты: наименование статьи - <b>{name}</b>, id статьи - <b>{id}</b></p>
+                      <p><?php echo $text_available_masks; ?>: <?php echo $text_mask_id; ?>, <?php echo $text_mask_name; ?></p>
                     </td>
                   </tr>
                   <tr>
-                    <td>Переводить в нижний регистр</td>
+                    <td><?php echo $text_lowercase; ?></td>
                     <td>
                       <input class="gen_register_to_low" type="checkbox" checked="checked" />
-                      <p>При включенном параметре ссылки будут полностью переведены в нижний регистр</p>
+                      <p><?php echo $text_lowercase_hint; ?></p>
                     </td>
                   </tr>
                   <tr>
-                    <td>Отчет</td>
+                    <td><?php echo $text_report; ?></td>
                     <td>
                       <select class="gen_report">
-                        <option value="full">Полный</option>
-                        <option value="error">Только ошибки</option>
+                        <option value="full"><?php echo $text_report_full; ?></option>
+                        <option value="error"><?php echo $text_report_error; ?></option>
                       </select>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <a onclick="generateLinks('gen_page');" class="button">Генерировать ссылки для статей</a> <span class="gen_loading"></span>
+              <a onclick="generateLinks('gen_information');" class="button"><?php echo $button_generate; ?></a> <span class="gen_loading"></span>
               <br>
               <div class="outreport"></div>
             </div>
@@ -323,28 +328,22 @@
         </div>
 
         <div id="tab_log" class="divtab">
-          <p>Тут указан список ссылок с неуказанным SEO URL, к которым зафиксировано обращение про формировании страниц сайта.</p>
+          <p><?php echo $tab_log_hint; ?></p>
           <div id="table_log">
-            <table class="form">
+            <ul>
               <?php $log_row = 0; ?>
               <?php foreach ($logs as $log) { ?>
-              <tbody id="log-row<?php echo $log_row; ?>">
-                <tr>
-                  <td class="left">
-                    <?php echo $log['message']; ?>
-                  </td>
-                </tr>
-              </tbody>
+              <?php echo '<li><a target="_blank" href="'.$log['message'].'&token='.$token.'">'.$log['message'].'</a></li>'; ?>
               <?php $log_row++; ?>
               <?php } ?>
-            </table>
+            </ul>
           </div>
 
-          <a onclick="clearLog();" class="button">Очистить журнал</a> <span class="gen_loading"></span>
+          <a onclick="clearLog();" class="button"><?php echo $text_clear_log; ?></a> <span class="gen_loading"></span>
         </div>
 
         <div id="tab_help" class="divtab">
-          <p>tab4</p>
+          <p><?php echo $text_help; ?></p>
         </div>
 
       </form>
@@ -407,7 +406,7 @@ function clearLog() {
 
   jQuery.ajax({
     type: 'post',
-    url: 'index.php?route=module/seomage/clearlog&token=<? print $token; ?>',
+    url: 'index.php?route=module/seomage/clearlog&token=<?php echo $token; ?>',
     dataType: 'json',
     success: function(e) {
       $('#table_log').html('');
@@ -442,7 +441,7 @@ function generateLinks(id) {
 
   jQuery.ajax({
     type: 'post',
-    url: 'index.php?route=module/seomage/generation&token=<? print $token; ?>',
+    url: 'index.php?route=module/seomage/generation&token=<?php echo $token; ?>',
     data: gendata,
     dataType: 'json',
     success: function(e) {
@@ -452,8 +451,8 @@ function generateLinks(id) {
       if (e.fail) {
         $('#'+id+' .message').html('<div class="attention">'+e.fail+'</div>');
       }
-      var report = '<h3>Отчет</h3>' + e.report;
-      if (e.error_count == 0) { report += '<h3>Ошибок нет</h3>'; }
+      var report = '<h3><?php echo $text_report; ?></h3>' + e.report;
+      if (e.error_count == 0) { report += '<h3><?php echo $text_no_error; ?></h3>'; }
       $('#'+id+' .outreport').html(report);
 
 
@@ -461,7 +460,7 @@ function generateLinks(id) {
       $('.gen_loading').html('');
     },
     error: function(e) {
-      $('#'+id+' .message').html('<div class="warning"><? print $text_ajax_error; ?></div>');
+      $('#'+id+' .message').html('<div class="warning"><?php echo $text_ajax_error; ?></div>');
       inajax = false;
       $('.gen_loading').html('');
     }

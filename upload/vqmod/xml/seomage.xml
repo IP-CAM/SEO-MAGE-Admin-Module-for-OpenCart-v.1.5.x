@@ -4,12 +4,12 @@
 	<version>1.0</version>
 	<vqmver>2.1</vqmver>
 	<author>negasus.ru</author>
-	
+
 	<file name="catalog/controller/common/seo_url.php">
 		<operation>
 			<search position="after"><![CDATA[$parts = explode('/', $this->request->get['_route_']);]]></search>
 			<add><![CDATA[
-			// ################ SEO Mini Pro { ################
+			// ################ SEOMage { ################
 			if ($this->config->get('seomage_status')) {
 				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seomage WHERE keyword = '" . $this->db->escape($this->request->get['_route_']) . "'");
 				
@@ -18,37 +18,42 @@
 					return $this->forward($this->request->get['route']);
 				}
 			}
-			// ################ } SEO Mini Pro ################
+			// ################ } SEOMage ################
 			]]></add>
 		</operation>
+
 		<operation>
-			<search position="before" offset="3"><![CDATA[
+			<search position="before"><![CDATA[
 		if ($url) {
 		]]></search>
 			<add><![CDATA[
-				// ################ SEO Mini Pro { ################
-				else 
-				{
-					if ($this->config->get('seomage_status')) {
-						$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seomage WHERE `query` = '" . $this->db->escape($data['route']) . "'");
-				
-						if ($query->num_rows) {
-							$url .= '/' . $query->row['keyword'];
-							unset($data[$key]);
-						}							
-						else 
-						if ($this->config->get('seomage_debug')) {
-							$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seomage_log WHERE `message` = '" . $this->db->escape($data['route']) . "'");
-							if (!$query->rows) {
-								$this->db->query("INSERT INTO " . DB_PREFIX . "seomage_log SET message = '" . $this->db->escape($data['route']) . "'");
-							}
-						}
-					}
-				}
-				// ################ } SEO Mini Pro ################
+		// ################ SEOMage { ################
+		if (!$url && $this->config->get('seomage_status')) {
+			$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seomage WHERE `query` = '" . $this->db->escape($data['route']) . "'");
+			if ($query->num_rows) {
+				$url = '/' . $query->row['keyword'];
+				unset($data[$key]);
+			}							
+		}
+		// ################ } SEOMage ################
 				]]></add>
 		</operation>
 
+		<operation>
+			<search position="before"><![CDATA[
+			return $link;
+			]]></search>
+			<add><![CDATA[
+			// ################ SEOMage { ################
+			if ($this->config->get('seomage_status') && $this->config->get('seomage_debug')) {
+				$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seomage_log WHERE `message` = '" . $this->db->escape($link) . "'");
+				if (!$query->rows) {
+					$this->db->query("INSERT INTO " . DB_PREFIX . "seomage_log SET message = '" . $this->db->escape($link) . "'");
+				}
+			}
+			// ################ } SEOMage ################
+			]]></add>
+		</operation>
 	</file>
 
 </modification>

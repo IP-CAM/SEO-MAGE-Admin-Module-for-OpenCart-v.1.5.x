@@ -5,6 +5,8 @@ class ControllerModuleSeomage extends Controller {
 	public function install() {
 		$this->load->model('module/seomage');
 		$this->model_module_seomage->install();
+		$this->load->model('setting/setting');
+		$this->model_setting_setting->editSetting('seomage', array("seomage_checkupdate" => 1));
 	}
 
 	public function uninstall() {
@@ -15,19 +17,15 @@ class ControllerModuleSeomage extends Controller {
 	}
 
 	private function convertFURL($s) {
-		$cyrillic = array("а","б","в","г","д","е","ж","з","и","й","к","л","м","н","о","п","р","с","т","у","ф","х","ц","ч","ш","щ","ъ","ь","ю","я","А","Б","В","Г","Д","Е","Ж","З","И","Й","К","Л","М","Н","О","П","Р","С","Т","У","Ф","Х","Ц","Ч","Ш","Щ","Ъ","Ь","Ю","Я","Ї","ї","Є","є","Ы","ы","Ё","ё","ı","İ","ğ","Ğ","ü","Ü","ş","Ş","ö","Ö","ç","Ç","Á","á","Â","â","Ã","ã","À","à","Ç","ç","É","é","Ê","ê","Í","í","Ó","ó","Ô","ô","Õ","õ","Ú","ú");
-		$latin = array("a","b","v","g","d","e","zh","z","i","y","k","l","m","n","o","p","r","s","t","u","f","h","ts","ch","sh","sht","a","y","yu","ya","A","B","V","G","D","E","Zh","Z","I","Y","K","L","M","N","O","P","R","S","T","U","F","H","Ts","Ch","Sh","Sht","A","Y","Yu","Ya","I","i","Ye","ye","I","i","Yo","yo","i","I","g","G","u","U","s","S","o","O","c","C","A","a","A","a","A","a","A","a","C","c","E","e","E","e","I","i","O","o","O","o","O","o","U","u");
-
-		$a = array();
-		foreach ($cyrillic as $value) {
-			$a[] = iconv('UTF-8//IGNORE', 'CP1251//IGNORE', $value);
-		}
-		$cyrillic = $a;
+		$cyrillic = array("а","б","в","г","д","е","ж", "з","и","й","к","л","м","н","о","п","р","с","т","у","ф","х","ц", "ч", "ш", "щ",  "ъ","ь","ю", "я", "А","Б","В","Г","Д","Е","Ж", "З","И","Й","К","Л","М","Н","О","П","Р","С","Т","У","Ф","Х","Ц", "Ч", "Ш", "Щ",  "Ъ","Ь","Ю", "Я", "Ї","ї","Є", "є", "Ы","ы","Ё", "ё", "ı","İ","ğ","Ğ","ü","Ü","ş","Ş","ö","Ö","ç","Ç","Á","á","Â","â","Ã","ã","À","à","Ç","ç","É","é","Ê","ê","Í","í","Ó","ó","Ô","ô","Õ","õ","Ú","ú");
+		$latin =    array("a","b","v","g","d","e","zh","z","i","y","k","l","m","n","o","p","r","s","t","u","f","h","ts","ch","sh","sht","a","y","yu","ya","A","B","V","G","D","E","Zh","Z","I","Y","K","L","M","N","O","P","R","S","T","U","F","H","Ts","Ch","Sh","Sht","A","Y","Yu","Ya","I","i","Ye","ye","I","i","Yo","yo","i","I","g","G","u","U","s","S","o","O","c","C","A","a","A","a","A","a","A","a","C","c","E","e","E","e","I","i","O","o","O","o","O","o","U","u");
 
 		$res = '';
-		$arr = str_split(iconv('UTF-8', 'CP1251', $s));
+		$arr = preg_split('//u', $s, null, PREG_SPLIT_NO_EMPTY); 
+
 		foreach ($arr as $value) {
 			$ord = ord($value);
+			// 0-9, a-z, A-Z
 			if (($ord > 47 && $ord < 58) || ($ord > 96 && $ord < 123) || ($ord > 64 && $ord < 91)) {
 				$res .= $value;
 				continue;
@@ -45,7 +43,7 @@ class ControllerModuleSeomage extends Controller {
 	public function clearlog() {
 		$this->load->model('module/seomage');
 		$this->model_module_seomage->clearLog();		
-		$json['success'] = 'ok';
+		$json['success'] = 'OK';
      	$this->response->setOutput(json_encode($json));	
 	}
 	
@@ -65,9 +63,11 @@ class ControllerModuleSeomage extends Controller {
 		$counter = 0;
 
 		$this->load->model('module/seomage');
+		$this->language->load('module/seomage');
 
 		$keywords = $this->model_module_seomage->getAllKeywords();
 
+		// Generation PRODUCTS links
 		if ($_POST['id'] == 'gen_product') {
 			$this->load->model('catalog/product');
 			$prods = $this->model_catalog_product->getProducts();
@@ -76,7 +76,7 @@ class ControllerModuleSeomage extends Controller {
 				$error_row = false;
 				$error_text = '';
 				$data = array();
-				// Наименование и id
+
 				$desc = $this->model_catalog_product->getProductDescriptions($value['product_id']);
 				$data['id'] = $value['product_id'];
 				$data['name'] = $desc[$language]['name'];
@@ -86,7 +86,6 @@ class ControllerModuleSeomage extends Controller {
 				$data['manufacturer'] = '';
 				$data['category'] = '';
 
-				// Производителя подгрузить
 				if (strpos($template, '{manufacturer}') !== false) {
 					$this->load->model('catalog/manufacturer');
 					$m = $this->model_catalog_manufacturer->getManufacturer($data['manufacturer_id']);
@@ -94,7 +93,7 @@ class ControllerModuleSeomage extends Controller {
 						$data['manufacturer'] = $m['name'];
 					} 
 				}
-				// Категорию подгрузить
+
 				if (strpos($template, '{category}') !== false) {
 					$c = $this->model_module_seomage->getCategoryByProduct($data['id'], $language);
 					if (isset($c[0]['name'])) {
@@ -123,12 +122,12 @@ class ControllerModuleSeomage extends Controller {
 				if (in_array($data['keyword'], $keywords['seomage'])) {
 					$error_row = true;
 					$error_count++;
-					$error_text = 'Обнаружен дубликат, заданный в модуле SEO Mage. Ссылка не создана';
+					$error_text = $this->language->get('text_find_dub_seomage');
 				} else
 				if (in_array($data['keyword'], $keywords['default'])) {
 					$error_row = true;
 					$error_count++;
-					$error_text = 'Обнаружен дубликат, ссылка не создана';
+					$error_text = $this->language->get('text_find_dub_default');
 				} else {
 					$this->model_module_seomage->setProductURL($data);
 					$keywords['default'][] = $data['keyword'];
@@ -140,6 +139,7 @@ class ControllerModuleSeomage extends Controller {
 			}
 		}
 
+		// Generation CATEGORIES links
 		if ($_POST['id'] == 'gen_category') {
 			$this->load->model('catalog/category');
 			$categories = $this->model_catalog_category->getCategories(array());
@@ -148,7 +148,7 @@ class ControllerModuleSeomage extends Controller {
 				$error_row = false;
 				$error_text = '';
 				$data = array();
-				// Наименование и id
+
 				$desc = $this->model_catalog_category->getCategoryDescriptions($value['category_id']);
 				$data['id'] = $value['category_id'];
 				$data['name'] = $desc[$language]['name'];
@@ -170,12 +170,12 @@ class ControllerModuleSeomage extends Controller {
 				if (in_array($data['keyword'], $keywords['seomage'])) {
 					$error_row = true;
 					$error_count++;
-					$error_text = 'Обнаружен дубликат, заданный в модуле SEO Mage. Ссылка не создана';
+					$error_text = $this->language->get('text_find_dub_seomage');
 				} else
 				if (in_array($data['keyword'], $keywords['default'])) {
 					$error_row = true;
 					$error_count++;
-					$error_text = 'Обнаружен дубликат, ссылка не создана';
+					$error_text = $this->language->get('text_find_dub_default');
 				} else {
 					$this->model_module_seomage->setCategoryURL($data);
 					$keywords['default'][] = $data['keyword'];
@@ -187,6 +187,7 @@ class ControllerModuleSeomage extends Controller {
 			}
 		}
 
+		// Generation INFORMATIONS links
 		if ($_POST['id'] == 'gen_page') {
 			$this->load->model('catalog/information');
 			$informations = $this->model_catalog_information->getInformations(array());
@@ -195,7 +196,7 @@ class ControllerModuleSeomage extends Controller {
 				$error_row = false;
 				$error_text = '';
 				$data = array();
-				// Наименование и id
+
 				$desc = $this->model_catalog_information->getInformationDescriptions($value['information_id']);
 				$data['id'] = $value['information_id'];
 				$data['name'] = $desc[$language]['title'];
@@ -217,12 +218,12 @@ class ControllerModuleSeomage extends Controller {
 				if (in_array($data['keyword'], $keywords['seomage'])) {
 					$error_row = true;
 					$error_count++;
-					$error_text = 'Обнаружен дубликат, заданный в модуле SEO Mage. Ссылка не создана';
+					$error_text = $this->language->get('text_find_dub_seomage');
 				} else
 				if (in_array($data['keyword'], $keywords['default'])) {
 					$error_row = true;
 					$error_count++;
-					$error_text = 'Обнаружен дубликат, ссылка не создана';
+					$error_text = $this->language->get('text_find_dub_default');
 				} else {
 					$this->model_module_seomage->setInformationURL($data);
 					$keywords['default'][] = $data['keyword'];
@@ -234,8 +235,7 @@ class ControllerModuleSeomage extends Controller {
 			}
 		}
 
-
-
+		// Generation MANUFACTURERS links
 		if ($_POST['id'] == 'gen_manufacturer') {
 			$this->load->model('catalog/manufacturer');
 			$manufacturers = $this->model_catalog_manufacturer->getManufacturers(array());
@@ -244,7 +244,7 @@ class ControllerModuleSeomage extends Controller {
 				$error_row = false;
 				$error_text = '';
 				$data = array();
-				// Наименование и id
+
 				$desc = $this->model_catalog_manufacturer->getManufacturer($value['manufacturer_id']);
 				$data['id'] = $value['manufacturer_id'];
 				$data['name'] = $desc['name'];
@@ -266,12 +266,12 @@ class ControllerModuleSeomage extends Controller {
 				if (in_array($data['keyword'], $keywords['seomage'])) {
 					$error_row = true;
 					$error_count++;
-					$error_text = 'Обнаружен дубликат, заданный в модуле SEO Mage. Ссылка не создана';
+					$error_text = $this->language->get('text_find_dub_seomage');
 				} else
 				if (in_array($data['keyword'], $keywords['default'])) {
 					$error_row = true;
 					$error_count++;
-					$error_text = 'Обнаружен дубликат, ссылка не создана';
+					$error_text = $this->language->get('text_find_dub_default');
 				} else {
 					$this->model_module_seomage->setManufacturerURL($data);
 					$keywords['default'][] = $data['keyword'];
@@ -286,22 +286,24 @@ class ControllerModuleSeomage extends Controller {
 
 		
 		if ($error_count > 0) {
-			$json['fail'] = 'Обнаружены дублирующие ссылки. Количество: ' . $error_count. '. Всего обработано строк: ' . $counter;
+			$json['fail'] = $this->language->get('text_error_dublicate') . $error_count . '. ' . $this->language->get('text_total_lines') . $counter;
 		} else {
-			$json['success'] = 'Ссылки успешно сгенерированы. Количество: ' . $counter;
+			$json['success'] = $this->language->get('text_gen_success') . $counter;
 		}
 		$json['report'] = $report;
 		$json['error_count'] = $error_count;
      	$this->response->setOutput(json_encode($json));	
     }
 
-	public function index() {   
+	public function index() {
+		// MODULE VERSION 
+		$seomage_version = '1.0';
+
 		$this->language->load('module/seomage');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('setting/setting');
-		
 		$this->load->model('module/seomage');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
@@ -312,46 +314,99 @@ class ControllerModuleSeomage extends Controller {
 			}
 			
 			$this->model_setting_setting->editSetting('seomage', $this->request->post);
-
 			$this->session->data['success'] = $this->language->get('text_success');
-
 			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 
 
-		$this->data['heading_title'] = $this->language->get('heading_title');
-		$this->data['seomage_version'] = $this->language->get('text_version') . ' ' . $this->language->get('seomage_version');
-		$this->data['text_version_hint'] = '';
-		$this->data['text_ajax_error'] = $this->language->get('text_ajax_error');
+		$this->data['text_version'] = $this->language->get('text_version') . ' <b>' . $seomage_version . '</b>';
 
-		// Провека версии
-		$version_url = 'https://raw.githubusercontent.com/Negasus/oc.seomage/master/version.txt';
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_URL, $version_url);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); 
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-		$version = curl_exec($curl);
-		curl_close($curl);
 
-		if ($this->language->get('seomage_version') !== $version) {
-			$this->data['text_version_hint'] = $this->language->get('text_new_version_available');
+		$lang_vars = array(
+			'heading_title',
+
+			// Text
+			'text_version_hint',
+			'text_module',
+			'text_success',
+			'text_ajax_error',
+
+			'button_add_keyword',
+			'button_save',
+			'button_cancel',
+			'button_remove',
+			'button_generate',
+
+			'text_new_version_available',
+			'text_check_version_fail',
+
+			'tab_help',
+			'tab_generation',
+			'tab_generation_hint',
+			'tab_log',
+			'tab_log_hint',
+			'tab_edit',
+			'tab_edit_hint',
+
+			'text_categories',
+			'text_products',
+			'text_manufacturers',
+			'text_informations',
+			'text_gen_categories',
+			'text_gen_products',
+			'text_gen_manufacturers',
+			'text_gen_informations',
+			'text_language',
+			'text_template',
+			'text_custom_template',
+			'text_available_masks',
+			'text_lowercase',
+			'text_lowercase_hint',
+			'text_report',
+			'text_report_full',
+			'text_report_error',
+			'text_clear_log',
+			'text_no_error',
+
+			'text_mask_id',
+			'text_mask_name',
+			'text_mask_model',
+			'text_mask_sku',
+			'text_mask_manufacturer',
+			'text_mask_category',
+
+			// Entry
+			'entry_status',
+			'entry_checkupdate',
+			'entry_debug',
+			'entry_route',
+			'entry_keyword',
+
+			'text_help'
+
+		);
+		foreach ($lang_vars as $value) {
+			$this->data[$value] = $this->language->get($value);
 		}
 
-		$this->data['entry_status'] = $this->language->get('entry_status');
-		$this->data['entry_debug'] = $this->language->get('entry_debug');
-		$this->data['entry_route'] = $this->language->get('entry_route');
-		$this->data['entry_keyword'] = $this->language->get('entry_keyword'); 
+		if ($this->config->get('seomage_checkupdate')) {
+			// Check new version available
+			$version_url = 'https://raw.githubusercontent.com/Negasus/oc.seomage/master/version.txt';
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_URL, $version_url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); 
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+			$version = curl_exec($curl);
+			curl_close($curl);
 
-		$this->data['button_save'] = $this->language->get('button_save');
-		$this->data['button_cancel'] = $this->language->get('button_cancel');
-		$this->data['button_add_keyword'] = $this->language->get('button_add_keyword');
-		$this->data['button_remove'] = $this->language->get('button_remove');
-
-		$this->data['tab_edit'] = $this->language->get('tab_edit');
-		$this->data['tab_edit_hint'] = $this->language->get('tab_edit_hint');
-		$this->data['tab_generation'] = $this->language->get('tab_generation');
-		$this->data['tab_help'] = $this->language->get('tab_help');
-		$this->data['tab_log'] = $this->language->get('tab_log');
+			if ($version === false || substr($version, 0, 7) != 'SEOMAGE') {
+				$this->data['text_version_hint'] = $this->language->get('text_check_version_fail');
+			} elseif ($seomage_version !== substr($version, 7)) {
+				$this->data['text_version_hint'] = $this->language->get('text_new_version_available') . substr($version, 7);
+			}
+		} else {
+			$this->data['text_version_hint'] = '';
+		}
 
 		$this->data['token'] = $this->session->data['token'];
 
@@ -385,12 +440,11 @@ class ControllerModuleSeomage extends Controller {
 		);
 
 		$this->data['action'] = $this->url->link('module/seomage', 'token=' . $this->session->data['token'], 'SSL');
-
 		$this->data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
 
 		$this->data['seomage_status'] = $this->config->get('seomage_status');
 		$this->data['seomage_debug'] = $this->config->get('seomage_debug');
-		
+		$this->data['seomage_checkupdate'] = $this->config->get('seomage_checkupdate');
 
 		$this->data['keywords'] = array();
 		$this->data['keywords'] = $this->model_module_seomage->getKeywords();
