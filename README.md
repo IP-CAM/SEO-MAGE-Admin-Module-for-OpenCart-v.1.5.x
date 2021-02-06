@@ -1,18 +1,18 @@
 oc.seomage
 ==========
 
-SEO Mage - модуль администратора для OpenCart
+SEO Mage - admin module for OpenCart
 
-Модуль SEO Mage позволяет:
+SEO Mage module allows you to:
 
-* Автоматически генерировать ключевые слова (SEO URL) для категорий, товаров, производителей, страниц информации
-* Использовать при генерации ссылок специальные шаблоны для автозамен
-* Устанавливать ключевые слова на любые разделы сайта. Например на страницу входа, регистрации и т.д.
-* Использовать режим отладки для отслеживания ссылок, на которые не установлены ключевые слова
-* Отслеживать дублирование ключевых слов
-* Автоматически проверять доступность обновлений модуля и предупреждать пользователя
+* Automatically generate keywords (SEO URL) for categories, products, manufacturers, information pages
+* Use special templates for autocorrect when generating links
+* Set keywords for any section of the site. For example, to the login page, registration, etc.
+* Use debug mode to track links that don't have keywords set
+* Track duplicate keywords
+* Automatically check for availability of module updates and alert the user
 
-SEO Mage не изменяет функциональности вашего магазина, а лишь дополняет его.
-Вы по-прежнему используете встроенные средства SEO. А модуль SEO Mage расширяет ваши возможности.
+SEO Mage does not change the functionality of your store, but only complements it.
+You are still using built-in SEO. And the SEO Mage module expands your possibilities.
 
-В модуле есть подробная справка по работе.
+The module has detailed help on how to work. 
